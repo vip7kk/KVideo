@@ -207,12 +207,6 @@ export function PasswordGate({
       });
       const data = await response.json();
 
-      if (response.status === 503) {
-        setError('认证存储暂时不可用，请检查 Upstash Redis 配置');
-        setIsValidating(false);
-        return;
-      }
-
       if (data.valid && data.session) {
         setSession(toAuthSession(data.session), data.persistSession ?? persistSession);
         setIsLocked(false);

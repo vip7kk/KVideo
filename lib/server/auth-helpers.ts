@@ -87,8 +87,7 @@ export function shouldUseSecureSessionCookie(request?: SessionCookieProtocolRequ
   return request.nextUrl.protocol === 'https:';
 }
 
-// Cloudflare Workers rejects PBKDF2 iteration counts above 100,000.
-const PBKDF2_ITERATIONS = 100_000;
+const PBKDF2_ITERATIONS = 120_000;
 const PBKDF2_KEY_BYTES = 32;
 const SESSION_TOKEN_VERSION = 'v1';
 
@@ -176,14 +175,6 @@ export async function hashPassword(password: string, salt?: string): Promise<{ h
 export async function verifyPassword(password: string, salt: string, expectedHash: string): Promise<boolean> {
   const actual = await hashPassword(password, salt);
   return actual.hash === expectedHash;
-}
-
-export function isBootstrapAdminCredential(
-  username: string,
-  password: string,
-  adminPassword: string
-): boolean {
-  return normalizeUsername(username) === 'admin' && !!adminPassword && password === adminPassword;
 }
 
 export async function signSessionPayload(payload: SessionPayload, secret: string): Promise<string> {
